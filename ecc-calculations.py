@@ -15,6 +15,7 @@ import sys
 # https://github.com/alexmgr/tinyec
 # https://cryptobook.nakov.com/digital-signatures/ecdsa-sign-verify-messages
 # http://www.secg.org/sec1-v2.pdf (4.1.4 Verifying Operation)
+# http://www.secg.org/sec1-v2.pdf (4.1.6 Public Key Recovery Operation)
 # http://www.secg.org/sec2-v2.pdf (2.4.2 Recommended Parameters secp256r1)
 # https://cryptobook.nakov.com/asymmetric-key-ciphers/elliptic-curve-cryptography-ecc
 
