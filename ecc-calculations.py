@@ -53,7 +53,7 @@ def generate_signature(keypair, message):
     digest = Crypto.Hash.SHA256.new(message)
     print (f"digest = {digest.hexdigest()}")
 
-    signer = Crypto.Signature.DSS.new(keypair, CRYPTO_DOME_RANDOM_SIGNATURE_MODE)
+    signer = Crypto.Signature.DSS.new(keypair, CRYPTO_DOME_RANDOM_SIGNATURE_MODE, encoding="binary")
     signature = signer.sign(digest)
     print (f"signature = {signature.hex()}")
 
@@ -65,7 +65,7 @@ def verify_signature_cryptodome(public_key, message, signature):
     digest = Crypto.Hash.SHA256.new(message)
     print (f"digest = {digest.hexdigest()}")
 
-    verifier = Crypto.Signature.DSS.new(public_key, CRYPTO_DOME_RANDOM_SIGNATURE_MODE)
+    verifier = Crypto.Signature.DSS.new(public_key, CRYPTO_DOME_RANDOM_SIGNATURE_MODE, encoding="binary")
     try:
         verifier.verify(digest, signature)
         return True
@@ -183,7 +183,7 @@ def public_keys_from_signature(message, signature):
                                                                           candidate_public_key_point.y, curve=CURVE_NAME)
         Crypto_candidate_public_key = Crypto.PublicKey.ECC.EccKey(point=Crypto_candidate_public_key_point, curve=CURVE_NAME)
 
-        verifier = Crypto.Signature.DSS.new(Crypto_candidate_public_key, CRYPTO_DOME_RANDOM_SIGNATURE_MODE)
+        verifier = Crypto.Signature.DSS.new(Crypto_candidate_public_key, CRYPTO_DOME_RANDOM_SIGNATURE_MODE, encoding="binary")
         try:
             verifier.verify(digest, signature)
             # Signature matches, store the public key.
