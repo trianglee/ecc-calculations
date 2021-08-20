@@ -24,3 +24,7 @@ standard libraries.
 **[pycryptodome](https://github.com/Legrandin/pycryptodome/)**, 
 **[tinyec](https://github.com/alexmgr/tinyec)** and 
 **[nummaster](https://pypi.org/project/nummaster/)** are used for various primitives.
+
+## License
+
+[Apache License 2.0](LICENSE).
