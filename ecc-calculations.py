@@ -194,17 +194,45 @@ def public_keys_from_signature(message, signature):
     return valid_public_keys
 
 
+def public_keys_from_multiple_signatures(messages_and_signatures):
+
+    intersecting_public_keys_pem = None
+
+    for message_and_signature in messages_and_signatures:
+        (message, signature) = message_and_signature
+
+        public_keys = public_keys_from_signature(message, signature)
+
+        # Convert public keys to PEM because EccKey isn't hashable, and cannot be used in a set.
+        public_keys_pem = set([ public_key.export_key(format="PEM") for public_key in public_keys ])
+
+        if intersecting_public_keys_pem is None:
+            intersecting_public_keys_pem = public_keys_pem
+        else:
+            intersecting_public_keys_pem = intersecting_public_keys_pem.intersection(public_keys_pem)
+
+    # Convert PEM public keys back to EccKey.
+    intersecting_public_keys = [ Crypto.PublicKey.ECC.import_key(public_key_pem) for public_key_pem in intersecting_public_keys_pem ]
+
+    return list(intersecting_public_keys)
+
+
 def main():
 
-    message = b'Message'
-
     keypair = generate_keypair()
-    signature = generate_signature(keypair, message)
+
+    message1 = b'Message 1'
+    message2 = b'Message 2'
+    message3 = b'Message 3'
+
+    signature1 = generate_signature(keypair, message1)
+    signature2 = generate_signature(keypair, message2)
+    signature3 = generate_signature(keypair, message3)
 
 
     print ("=== Signature Verification Using PyCryptodome ===")
 
-    valid = verify_signature_cryptodome(keypair.public_key(), message, signature)
+    valid = verify_signature_cryptodome(keypair.public_key(), message1, signature1)
     if valid:
         print("----> Signature matches.")
     else:
@@ -214,7 +242,7 @@ def main():
 
     print ("=== Signature Verification Using ECC Calculations ===")
 
-    valid = verify_signature_ecc_calcs(keypair.public_key(), message, signature)
+    valid = verify_signature_ecc_calcs(keypair.public_key(), message1, signature1)
     if valid:
         print("----> Signature matches.")
     else:
@@ -224,11 +252,31 @@ def main():
 
     print ("=== Public Key from Signature Using ECC Calculations ===")
 
-    public_keys = public_keys_from_signature(message, signature)
+    public_keys = public_keys_from_signature(message1, signature1)
     print("----> Valid public keys that can verify the signature -")
     for public_key in public_keys:
         print(public_key)
         if public_key == keypair.public_key():
             print ("(^^^ is identical to the original public key)")
+
+
+    print ("=== Public Key from Multiple Signatures Using ECC Calculations ===")
+
+    messages_and_signatures = [
+        [ message1, signature1 ],
+        [ message2, signature2 ],
+        [ message3, signature3 ],
+    ]
+    public_keys = public_keys_from_multiple_signatures(messages_and_signatures)
+
+    if len(public_keys) == 0:
+        print ("No public keys identified matching all signatures.")
+    else:
+        print ("Public keys identified matching all signatures -")
+        for public_key in public_keys:
+            print (public_key)
+            if public_key == keypair.public_key():
+                print ("(^^^ is identical to the original public key)")
+
 
 main()
