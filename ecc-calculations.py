@@ -20,8 +20,7 @@ import sys
 
 
 # NIST P-256 / secp256r1 curve parameters -
-# Taken from "2.4.2 Recommended Parameters secp256r1" in http://www.secg.org/sec2-v2.pdf
-# (also available in tinyec.registry.EC_CURVE_REGISTRY["secp256r1"])
+# (also available from "2.4.2 Recommended Parameters secp256r1" in http://www.secg.org/sec2-v2.pdf)
 
 CURVE_NAME = "secp256r1"  # Also known as "NIST P-256"
 
